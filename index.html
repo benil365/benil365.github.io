@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Imbwaga Benson | Digital Operations & InfoSec</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;600;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #080c10;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --green: #00e5a0;
+    --green2: #00b87a;
+    --blue: #0ea5e9;
+    --yellow: #f0c040;
+    --text: #c9d4e0;
+    --text2: #6a7f96;
+    --border: #1e2d3d;
+    --card: #0d1822;
+    --mono: 'JetBrains Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* Noise overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--green); border-radius: 2px; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 60px;
+    background: rgba(8,12,16,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--display);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--green);
+    letter-spacing: -0.5px;
+  }
+
+  .nav-logo span { color: var(--text2); font-weight: 400; }
+
+  nav ul {
+    list-style: none;
+    display: flex;
+    gap: 36px;
+  }
+
+  nav a {
+    text-decoration: none;
+    color: var(--text2);
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    position: relative;
+  }
+
+  nav a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 0; height: 1px;
+    background: var(--green);
+    transition: width 0.3s;
+  }
+
+  nav a:hover { color: var(--green); }
+  nav a:hover::after { width: 100%; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 0 60px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,160,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,160,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(0,229,160,0.08) 0%, transparent 70%);
+    top: 50%; left: 10%;
+    transform: translateY(-50%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-tag::before {
+    content: '';
+    display: inline-block;
+    width: 30px; height: 1px;
+    background: var(--green);
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+    color: #fff;
+  }
+
+  h1 .accent { color: var(--green); }
+
+  .hero-sub {
+    font-size: 15px;
+    color: var(--text2);
+    max-width: 520px;
+    margin-bottom: 40px;
+    line-height: 1.8;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 28px;
+    border-radius: 4px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.25s;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: var(--bg);
+    border: none;
+    font-weight: 700;
+  }
+
+  .btn-primary:hover {
+    background: var(--green2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,229,160,0.3);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+
+  .btn-outline:hover {
+    border-color: var(--green);
+    color: var(--green);
+    transform: translateY(-2px);
+  }
+
+  /* Terminal typing animation */
+  .terminal-box {
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 420px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .terminal-title {
+    font-size: 11px;
+    color: var(--text2);
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .terminal-body {
+    padding: 20px;
+    font-size: 12px;
+    line-height: 1.8;
+    min-height: 200px;
+  }
+
+  .t-prompt { color: var(--green); }
+  .t-cmd { color: #fff; }
+  .t-out { color: var(--text2); }
+  .t-key { color: var(--blue); }
+  .t-val { color: var(--yellow); }
+
+  .cursor {
+    display: inline-block;
+    width: 8px; height: 14px;
+    background: var(--green);
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink { 50% { opacity: 0; } }
+
+  /* Stat strip */
+  .stat-strip {
+    display: flex;
+    gap: 0;
+    margin-top: 48px;
+  }
+
+  .stat-item {
+    padding-right: 40px;
+    margin-right: 40px;
+    border-right: 1px solid var(--border);
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-num {
+    font-family: var(--display);
+    font-size: 36px;
+    font-weight: 800;
+    color: var(--green);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── SECTIONS ── */
+  section {
+    padding: 100px 60px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 40px;
+    height: 1px;
+    background: var(--green);
+  }
+
+  h2 {
+    font-family: var(--display);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -1px;
+    margin-bottom: 60px;
+    line-height: 1.1;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-text p {
+    color: var(--text);
+    margin-bottom: 20px;
+    font-size: 14px;
+    line-height: 1.9;
+  }
+
+  .about-text p strong { color: var(--green); font-weight: 600; }
+
+  .info-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .info-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .info-card:hover {
+    border-color: var(--green);
+    transform: translateX(4px);
+  }
+
+  .info-icon {
+    font-size: 20px;
+    width: 36px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  .info-detail { flex: 1; }
+
+  .info-key {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text2);
+    margin-bottom: 2px;
+  }
+
+  .info-val {
+    font-size: 13px;
+    color: #fff;
+    word-break: break-all;
+  }
+
+  .info-val a {
+    color: var(--green);
+    text-decoration: none;
+  }
+
+  /* ── EXPERIENCE ── */
+  .timeline {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--green), transparent);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 56px;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+
+  .tl-item.visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: -38px;
+    top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--green);
+    box-shadow: 0 0 12px rgba(0,229,160,0.6);
+  }
+
+  .tl-meta {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .tl-period {
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 0.08em;
+  }
+
+  .tl-badge {
+    font-size: 10px;
+    padding: 2px 10px;
+    border-radius: 99px;
+    border: 1px solid var(--green);
+    color: var(--green);
+    letter-spacing: 0.08em;
+  }
+
+  .tl-title {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+
+  .tl-org {
+    font-size: 13px;
+    color: var(--blue);
+    margin-bottom: 16px;
+  }
+
+  .tl-bullets {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .tl-bullets li {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  .tl-bullets li::before {
+    content: '▸';
+    color: var(--green);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ── SKILLS ── */
+  .skills-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .skill-group {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    transition: border-color 0.3s;
+  }
+
+  .skill-group:hover { border-color: var(--green); }
+
+  .skill-group-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--green);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .tag {
+    padding: 6px 14px;
+    background: rgba(0,229,160,0.06);
+    border: 1px solid rgba(0,229,160,0.2);
+    border-radius: 4px;
+    font-size: 12px;
+    color: var(--text);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .tag:hover {
+    background: rgba(0,229,160,0.12);
+    border-color: var(--green);
+    color: var(--green);
+  }
+
+  .tag.highlight {
+    background: rgba(14,165,233,0.08);
+    border-color: rgba(14,165,233,0.3);
+  }
+
+  .tag.highlight:hover {
+    background: rgba(14,165,233,0.15);
+    border-color: var(--blue);
+    color: var(--blue);
+  }
+
+  /* ── CERTS ── */
+  .certs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .cert-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 28px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, border-color 0.3s;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s, border-color 0.3s;
+  }
+
+  .cert-card.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .cert-card:hover { border-color: var(--green); transform: translateY(-4px) !important; }
+
+  .cert-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green), var(--blue));
+  }
+
+  .cert-icon { font-size: 28px; margin-bottom: 16px; }
+
+  .cert-name {
+    font-family: var(--display);
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .cert-issuer { font-size: 12px; color: var(--text2); }
+
+  /* ── PROJECTS ── */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .proj-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 32px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .proj-card:hover {
+    border-color: var(--green);
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+  }
+
+  .proj-num {
+    font-size: 11px;
+    color: var(--text2);
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .proj-title {
+    font-family: var(--display);
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+  }
+
+  .proj-desc {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+
+  .proj-tags { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  /* ── CONTACT ── */
+  #contact {
+    border-top: 1px solid var(--border);
+  }
+
+  .contact-inner {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-text p {
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.9;
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 24px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .contact-link:hover {
+    border-color: var(--green);
+    transform: translateX(6px);
+  }
+
+  .cl-icon { font-size: 20px; width: 28px; text-align: center; }
+
+  .cl-info { flex: 1; }
+
+  .cl-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text2);
+    margin-bottom: 2px;
+  }
+
+  .cl-val { color: #fff; font-size: 13px; }
+
+  .cl-arrow { color: var(--text2); transition: color 0.2s; }
+  .contact-link:hover .cl-arrow { color: var(--green); }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 60px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text2);
+    font-size: 12px;
+  }
+
+  footer .footer-logo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 16px;
+    color: var(--green);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up { animation: fadeUp 0.8s ease forwards; }
+  .delay-1 { animation-delay: 0.15s; }
+  .delay-2 { animation-delay: 0.3s; }
+  .delay-3 { animation-delay: 0.45s; }
+  .delay-4 { animation-delay: 0.6s; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 1024px) {
+    .terminal-box { display: none; }
+    .about-grid, .skills-wrap, .projects-grid, .contact-inner { grid-template-columns: 1fr; }
+    nav { padding: 16px 24px; }
+    nav ul { gap: 20px; }
+    #hero, section { padding-left: 24px; padding-right: 24px; }
+    footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
+  }
+
+  @media (max-width: 640px) {
+    nav ul { display: none; }
+    h1 { letter-spacing: -1px; }
+    .stat-strip { flex-wrap: wrap; gap: 24px; }
+    .stat-item { border: none; padding: 0; margin: 0; }
+  }
+
+  /* Glitch effect on name hover */
+  h1:hover .accent {
+    animation: glitch 0.4s ease;
+  }
+
+  @keyframes glitch {
+    0%, 100% { text-shadow: none; }
+    20% { text-shadow: -2px 0 var(--blue), 2px 0 #ff0055; }
+    40% { text-shadow: 2px 0 var(--blue), -2px 0 #ff0055; }
+    60% { text-shadow: -1px 0 var(--blue); }
+    80% { text-shadow: 1px 0 #ff0055; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">IB<span>.cc</span></div>
+  <ul>
+    <li><a href="#about">About</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#certs">Certs</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+
+  <div class="hero-content">
+    <div class="hero-tag fade-up">Available for InfoSec & Digital Ops Roles</div>
+
+    <h1 class="fade-up delay-1">
+      Imbwaga<br/>
+      <span class="accent">Benson</span>
+    </h1>
+
+    <p class="hero-sub fade-up delay-2">
+      Digital Operations professional & CC (ISC²) certified, building towards a career in Information Security.
+      Based in <strong style="color:#fff">Nairobi, Kenya</strong>.
+    </p>
+
+    <div class="hero-btns fade-up delay-3">
+      <a href="#contact" class="btn btn-primary">↗ Get in touch</a>
+      <a href="#experience" class="btn btn-outline">View Experience</a>
+    </div>
+
+    <div class="stat-strip fade-up delay-4">
+      <div class="stat-item">
+        <div class="stat-num">3+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4</div>
+        <div class="stat-label">Certifications</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">CC</div>
+        <div class="stat-label">ISC² Certified</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Terminal -->
+  <div class="terminal-box fade-up delay-2">
+    <div class="terminal-header">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <span class="terminal-title">benson@portfolio ~ whoami</span>
+    </div>
+    <div class="terminal-body" id="terminal">
+      <div><span class="t-prompt">❯ </span><span class="t-cmd" id="typed-cmd"></span></div>
+      <div id="terminal-output" style="margin-top:12px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 &mdash; About</div>
+  <h2>Who I am</h2>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>I'm an <strong>Information Science graduate</strong> from the Technical University of Kenya with a Second Class Honours (Upper Division), currently working as a Digital Operations Trainee at <strong>Nation Media Group</strong>.</p>
+      <p>My day-to-day involves Python-powered data automation, digital archive management, and access control — skills that map directly to the world of <strong>Information Security</strong>, which is where I'm headed.</p>
+      <p>I hold an <strong>ISC² Certified in Cybersecurity (CC)</strong> credential alongside Cisco Cybersecurity and AWS/IBM Cloud certifications, and I'm actively deepening my knowledge in endpoint security, SIEM, and SOC operations.</p>
+      <p>I thrive in collaborative, fast-paced environments and bring a documentation-first mindset to everything I build or secure.</p>
+    </div>
+    <div class="info-cards">
+      <div class="info-card">
+        <div class="info-icon">📍</div>
+        <div class="info-detail">
+          <div class="info-key">Location</div>
+          <div class="info-val">Nairobi, Kenya</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🎓</div>
+        <div class="info-detail">
+          <div class="info-key">Education</div>
+          <div class="info-val">BSc Information Science (Informatics) — TU-K</div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">📧</div>
+        <div class="info-detail">
+          <div class="info-key">Email</div>
+          <div class="info-val"><a href="mailto:luvagabenson@gmail.com">luvagabenson@gmail.com</a></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🔗</div>
+        <div class="info-detail">
+          <div class="info-key">LinkedIn</div>
+          <div class="info-val"><a href="https://linkedin.com/in/benson-imbwaga-649a5b2b7" target="_blank">benson-imbwaga</a></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">💻</div>
+        <div class="info-detail">
+          <div class="info-key">GitHub</div>
+          <div class="info-val"><a href="https://github.com/benil365" target="_blank">github.com/benil365</a></div>
+        </div>
+      </div>
+      <div class="info-card">
+        <div class="info-icon">🌐</div>
+        <div class="info-detail">
+          <div class="info-key">Languages</div>
+          <div class="info-val">English · Swahili · French (basic)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience" style="border-top:1px solid var(--border)">
+  <div class="section-label">02 &mdash; Experience</div>
+  <h2>Where I've worked</h2>
+  <div class="timeline">
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-meta">
+        <span class="tl-period">Sep 2025 – Present</span>
+        <span class="tl-badge">Current</span>
+      </div>
+      <div class="tl-title">Trainee — Digital Operations</div>
+      <div class="tl-org">Nation Media Group · Nairobi</div>
+      <ul class="tl-bullets">
+        <li>Built Python automation scripts that streamlined high-volume document indexing, boosting processing efficiency and data integrity.</li>
+        <li>Cleaned and structured multimedia datasets for a national newsroom, improving search and retrieval accuracy across the archive.</li>
+        <li>Enforced metadata tagging standards and access control protocols on digital archives, ensuring long-term preservation compliance.</li>
+        <li>Produced structured process documentation, reducing onboarding friction for new team members.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-meta">
+        <span class="tl-period">Feb 2025</span>
+        <span class="tl-badge">Contract</span>
+      </div>
+      <div class="tl-title">Communications Consultant</div>
+      <div class="tl-org">Agriterra</div>
+      <ul class="tl-bullets">
+        <li>Authored a regional digital impact report for the Agri-grade pilot programme, translating complex field data into stakeholder-ready content.</li>
+        <li>Designed branded visual materials in Canva aligned with international donor communication standards.</li>
+        <li>Coordinated iterative feedback cycles with internal stakeholders to improve output accuracy and clarity.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-meta">
+        <span class="tl-period">Jun 2024 – Sep 2024</span>
+        <span class="tl-badge">Internship</span>
+      </div>
+      <div class="tl-title">ICT Support Intern</div>
+      <div class="tl-org">Ulwazi Place Hotel (APHRC) · Nairobi</div>
+      <ul class="tl-bullets">
+        <li>Maintained and monitored workstations and servers, reducing system downtime during high-capacity conference events.</li>
+        <li>Resolved end-user technical issues in adherence to institutional IT security policies — zero-breach record throughout the period.</li>
+        <li>Led a digitisation initiative for internal records, improving data security and enabling controlled access management.</li>
+        <li>Supported end-to-end deployment and integration of biometric-linked access control systems.</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-meta">
+        <span class="tl-period">May 2023 – Jul 2023</span>
+        <span class="tl-badge">Internship</span>
+      </div>
+      <div class="tl-title">Informatics Intern (IBL)</div>
+      <div class="tl-org">Technical University of Kenya</div>
+      <ul class="tl-bullets">
+        <li>Designed and developed web-based information systems using HTML, CSS, JavaScript, and Python.</li>
+        <li>Contributed to data analytics and automation tasks, reducing manual processing steps with Python scripting.</li>
+        <li>Managed collaborative codebase using Git, maintaining version history and supporting peer code reviews.</li>
+        <li>Produced technical documentation for developed systems to ensure maintainability and knowledge transfer.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills" style="border-top:1px solid var(--border)">
+  <div class="section-label">03 &mdash; Skills</div>
+  <h2>What I work with</h2>
+  <div class="skills-wrap">
+    <div class="skill-group">
+      <div class="skill-group-title">⌨ Programming & Scripting</div>
+      <div class="skill-tags">
+        <span class="tag">Python</span>
+        <span class="tag">JavaScript</span>
+        <span class="tag">HTML5</span>
+        <span class="tag">CSS3</span>
+        <span class="tag">Bash (basic)</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">🔒 Security & Compliance</div>
+      <div class="skill-tags">
+        <span class="tag highlight">Endpoint Security</span>
+        <span class="tag highlight">Access Control</span>
+        <span class="tag highlight">IT Security Policies</span>
+        <span class="tag highlight">Incident Tracking</span>
+        <span class="tag highlight">IT Governance</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">🗄 Data & Databases</div>
+      <div class="skill-tags">
+        <span class="tag">MySQL</span>
+        <span class="tag">MS SQL Server</span>
+        <span class="tag">Digital Archiving</span>
+        <span class="tag">Metadata Management</span>
+        <span class="tag">Data Automation</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">☁ Cloud & Infrastructure</div>
+      <div class="skill-tags">
+        <span class="tag">AWS</span>
+        <span class="tag">IBM Cloud</span>
+        <span class="tag">Server Monitoring</span>
+        <span class="tag">System Administration</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">🛠 Tools & Platforms</div>
+      <div class="skill-tags">
+        <span class="tag">Git / GitHub</span>
+        <span class="tag">Canva</span>
+        <span class="tag">MS Office</span>
+        <span class="tag">LibreOffice</span>
+      </div>
+    </div>
+    <div class="skill-group">
+      <div class="skill-group-title">📋 Competencies</div>
+      <div class="skill-tags">
+        <span class="tag">Technical Documentation</span>
+        <span class="tag">IT Troubleshooting</span>
+        <span class="tag">System Monitoring</span>
+        <span class="tag">Stakeholder Communication</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTIFICATIONS -->
+<section id="certs" style="border-top:1px solid var(--border)">
+  <div class="section-label">04 &mdash; Certifications</div>
+  <h2>Credentials</h2>
+  <div class="certs-grid">
+    <div class="cert-card">
+      <div class="cert-icon">🛡️</div>
+      <div class="cert-name">Certified in Cybersecurity (CC)</div>
+      <div class="cert-issuer">ISC² — International</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">🔐</div>
+      <div class="cert-name">Cybersecurity & Endpoint Security</div>
+      <div class="cert-issuer">Cisco Networking Academy</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">☁️</div>
+      <div class="cert-name">Cloud Computing Fundamentals</div>
+      <div class="cert-issuer">AWS & IBM Cloud</div>
+    </div>
+    <div class="cert-card">
+      <div class="cert-icon">💡</div>
+      <div class="cert-name">Innovation & Digitization for SMEs</div>
+      <div class="cert-issuer">Technical University of Kenya</div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" style="border-top:1px solid var(--border)">
+  <div class="section-label">05 &mdash; Projects</div>
+  <h2>Key projects</h2>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-num">Project / 01</div>
+      <div class="proj-title">Agriterra Regional Impact Report</div>
+      <div class="proj-desc">Authored a regional agricultural impact report for the Agri-grade pilot programme, synthesising complex technical field data from multiple sites into structured, policy-relevant content distributed to international stakeholders.</div>
+      <div class="proj-tags">
+        <span class="tag">Technical Writing</span>
+        <span class="tag">Data Analysis</span>
+        <span class="tag">Canva</span>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">Project / 02</div>
+      <div class="proj-title">Biometric Access System Integration</div>
+      <div class="proj-desc">Supported end-to-end deployment of a biometric-linked access control system in a hospitality environment — covering hardware coordination, system testing, security configuration, and user onboarding across the facility.</div>
+      <div class="proj-tags">
+        <span class="tag highlight">Access Control</span>
+        <span class="tag highlight">Security</span>
+        <span class="tag">System Integration</span>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">Project / 03</div>
+      <div class="proj-title">Newsroom Archive Automation</div>
+      <div class="proj-desc">Built Python automation pipelines at Nation Media Group to index and clean high-volume digital media, improving document retrieval accuracy and enforcing consistent metadata standards across the newsroom's digital archive.</div>
+      <div class="proj-tags">
+        <span class="tag">Python</span>
+        <span class="tag">Automation</span>
+        <span class="tag">Data Management</span>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-num">Project / 04</div>
+      <div class="proj-title">Records Digitisation Initiative</div>
+      <div class="proj-desc">Led the digitisation and structured storage of internal records at APHRC, transitioning paper-based processes to a secure digital archive with controlled access — directly improving data security posture during the internship period.</div>
+      <div class="proj-tags">
+        <span class="tag highlight">Data Security</span>
+        <span class="tag">Digitisation</span>
+        <span class="tag highlight">Access Control</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">06 &mdash; Contact</div>
+  <h2>Let's connect</h2>
+  <div class="contact-inner">
+    <div class="contact-text">
+      <p>I'm actively seeking entry-level opportunities in <strong style="color:var(--green)">Information Security</strong>, <strong style="color:var(--green)">Digital Operations</strong>, and <strong style="color:var(--green)">IT Support</strong> roles — especially SOC Analyst, GRC Analyst, or ICT Support positions.</p>
+      <p>If you're hiring, collaborating, or just want to connect with someone building a career at the intersection of data and security, reach out — I respond quickly.</p>
+      <p style="color:var(--text2); font-size:12px; margin-top:32px;">📍 Nairobi, Kenya &nbsp;·&nbsp; Open to remote & hybrid</p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:luvagabenson@gmail.com" class="contact-link">
+        <span class="cl-icon">📧</span>
+        <div class="cl-info">
+          <div class="cl-label">Email</div>
+          <div class="cl-val">luvagabenson@gmail.com</div>
+        </div>
+        <span class="cl-arrow">→</span>
+      </a>
+      <a href="https://linkedin.com/in/benson-imbwaga-649a5b2b7" target="_blank" class="contact-link">
+        <span class="cl-icon">🔗</span>
+        <div class="cl-info">
+          <div class="cl-label">LinkedIn</div>
+          <div class="cl-val">benson-imbwaga-649a5b2b7</div>
+        </div>
+        <span class="cl-arrow">→</span>
+      </a>
+      <a href="https://github.com/benil365" target="_blank" class="contact-link">
+        <span class="cl-icon">💻</span>
+        <div class="cl-info">
+          <div class="cl-label">GitHub</div>
+          <div class="cl-val">github.com/benil365</div>
+        </div>
+        <span class="cl-arrow">→</span>
+      </a>
+      <a href="tel:+254797337497" class="contact-link">
+        <span class="cl-icon">📞</span>
+        <div class="cl-info">
+          <div class="cl-label">Phone</div>
+          <div class="cl-val">+254 797 337 497</div>
+        </div>
+        <span class="cl-arrow">→</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">IB.cc</div>
+  <div>Imbwaga Benson &mdash; Nairobi, Kenya &mdash; <span id="year"></span></div>
+  <div>Built for the future of InfoSec 🔐</div>
+</footer>
+
+<script>
+  // Year
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Terminal typing effect
+  const lines = [
+    { type: 'cmd', text: 'whoami' },
+    { type: 'out', text: '' },
+    { type: 'kv', key: 'name', val: 'Imbwaga Benson, CC' },
+    { type: 'kv', key: 'role', val: 'Digital Ops → InfoSec' },
+    { type: 'kv', key: 'cert', val: 'ISC² CC | Cisco | AWS' },
+    { type: 'kv', key: 'stack', val: 'Python · Git · MySQL · Cloud' },
+    { type: 'kv', key: 'status', val: '🟢 Open to opportunities' },
+  ];
+
+  let lineIdx = 0, charIdx = 0;
+  const cmdEl = document.getElementById('typed-cmd');
+  const outEl = document.getElementById('terminal-output');
+
+  function typeNext() {
+    if (lineIdx >= lines.length) return;
+    const line = lines[lineIdx];
+
+    if (line.type === 'cmd') {
+      if (charIdx < line.text.length) {
+        cmdEl.textContent += line.text[charIdx++];
+        setTimeout(typeNext, 80);
+      } else {
+        lineIdx++; charIdx = 0;
+        setTimeout(typeNext, 300);
+      }
+    } else if (line.type === 'out') {
+      outEl.innerHTML += '<div style="height:6px"></div>';
+      lineIdx++; charIdx = 0;
+      setTimeout(typeNext, 100);
+    } else if (line.type === 'kv') {
+      const div = document.createElement('div');
+      div.innerHTML = `<span class="t-key">${line.key}</span><span class="t-out">: </span><span class="t-val">${line.val}</span>`;
+      div.style.opacity = '0';
+      div.style.transform = 'translateX(-8px)';
+      div.style.transition = 'all 0.3s';
+      outEl.appendChild(div);
+      setTimeout(() => { div.style.opacity = '1'; div.style.transform = 'none'; }, 50);
+      lineIdx++; charIdx = 0;
+      setTimeout(typeNext, 200);
+    }
+  }
+
+  setTimeout(typeNext, 800);
+
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.tl-item, .cert-card').forEach(el => observer.observe(el));
+
+  // Stagger cert cards
+  document.querySelectorAll('.cert-card').forEach((card, i) => {
+    card.style.transitionDelay = `${i * 0.1}s`;
+  });
+
+  // Stagger timeline items
+  document.querySelectorAll('.tl-item').forEach((item, i) => {
+    item.style.transitionDelay = `${i * 0.1}s`;
+  });
+
+  // Smooth nav active state
+  const sections = document.querySelectorAll('section, #hero');
+  const navLinks = document.querySelectorAll('nav a');
+
+  window.addEventListener('scroll', () => {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 200) current = s.id;
+    });
+    navLinks.forEach(a => {
+      a.style.color = a.getAttribute('href') === `#${current}` ? 'var(--green)' : '';
+    });
+  });
+</script>
+</body>
+</html>
